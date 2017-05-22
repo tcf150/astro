@@ -1,9 +1,9 @@
 package com.zachary.astro.base;
 
 import android.app.Application;
-import android.content.res.Resources;
 
 import com.facebook.FacebookSdk;
+import com.zachary.astro.data.DataManager;
 
 /**
  * Created by user on 10/5/2017.

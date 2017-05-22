@@ -10,6 +10,7 @@ public class ChannelList extends BaseModel {
     private int channelId;
     private String channelTitle;
     private int channelStbNumber;
+    private boolean isFavourite;
 
     public int getChannelId() {
         return channelId;
@@ -33,5 +34,13 @@ public class ChannelList extends BaseModel {
 
     public void setChannelStbNumber(int channelStbNumber) {
         this.channelStbNumber = channelStbNumber;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 }

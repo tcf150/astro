@@ -15,7 +15,7 @@ public class BaseApiClient {
     public static AstroService getAstroService(){
         if (service == null) {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://ams-api.astro.com.my/ams")
+                    .baseUrl("http://ams-api.astro.com.my/ams/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

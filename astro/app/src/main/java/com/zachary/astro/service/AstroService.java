@@ -13,13 +13,13 @@ import retrofit2.http.Query;
  */
 
 public interface AstroService {
-    @GET("/v3/getChannelList")
+    @GET("v3/getChannelList")
     Call<GetChannelListResponse> getChannelList();
 
-    @GET("/v3/getChannels")
+    @GET("v3/getChannels")
     Call<GetChannelsResponse> getChannels();
 
-    @GET("/v3/getEvents")
+    @GET("v3/getEvents")
     Call<GetEventsResponse> getEvents();
 
 }

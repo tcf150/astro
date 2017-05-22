@@ -1,19 +1,30 @@
 package com.zachary.astro.base;
 
-import com.zachary.astro.model.Status;
-
 /**
  * Created by user on 10/5/2017.
  */
 
 public class BaseResponse {
-    private Status status;
+    private String responseMessage;
+    private String responseCode;
 
-    public Status getStatus() {
-        return status;
+    public String getResponseMessage() {
+        return responseMessage;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
+
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public boolean isSuccess(){
+        return responseCode.equals("200");
     }
 }

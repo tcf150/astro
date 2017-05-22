@@ -6,4 +6,5 @@ package com.zachary.astro.base;
 
 public interface BaseView<T extends BasePresenter> {
     void setPresenter(T presenter);
+    void displayErrorToast(String message);
 }

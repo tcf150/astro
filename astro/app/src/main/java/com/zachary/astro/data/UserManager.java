@@ -4,18 +4,19 @@ import com.zachary.astro.model.Channel;
 import com.zachary.astro.model.ChannelList;
 import com.zachary.astro.model.User;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by tongcheefei on 22/05/2017.
  */
 
-class UserManager {
+public class UserManager {
     private static final UserManager ourInstance = new UserManager();
 
     private User user;
 
-    static UserManager getInstance() {
+    public static UserManager getInstance() {
         return ourInstance;
     }
 
@@ -40,8 +41,20 @@ class UserManager {
     }
 
     public void setUser(User user){
+        this.user.setUserId(user.getUserId());
         this.user.setSocialId(user.getSocialId());
         this.user.setSsoType(user.getSsoType());
         this.user.getFavouriteList().addAll(user.getFavouriteList());
+    }
+
+    public boolean isFavourited(int channelId){
+        List<ChannelList> channelList = user.getFavouriteList();
+        if (channelList == null || channelList.size() == 0) return false;
+        for (ChannelList item : channelList){
+            if (item.getChannelId() == channelId){
+                return true;
+            }
+        }
+        return false;
     }
 }
