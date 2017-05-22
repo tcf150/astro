@@ -1,6 +1,6 @@
 package com.zachary.astro.base;
 
-import com.zachary.reddit.model.Status;
+import com.zachary.astro.model.Status;
 
 /**
  * Created by user on 10/5/2017.
