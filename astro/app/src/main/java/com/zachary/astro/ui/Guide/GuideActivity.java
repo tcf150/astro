@@ -1,6 +1,6 @@
-package com.zachary.astro.ui.Main;
+package com.zachary.astro.ui.Guide;
 
-import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -10,18 +10,19 @@ import android.view.MenuItem;
 import com.zachary.astro.R;
 import com.zachary.astro.base.BaseAppCompatActivity;
 import com.zachary.astro.model.annotation.SortType;
-import com.zachary.astro.ui.Guide.GuideActivity;
 
-public class MainActivity extends BaseAppCompatActivity {
-    private MainPresenter presenter;
+public class GuideActivity extends BaseAppCompatActivity {
+    private GuidePresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     protected void setupContentView() {
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_guide);
     }
 
     @Override
@@ -29,33 +30,27 @@ public class MainActivity extends BaseAppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        MainFragment mainFragment = new MainFragment();
-        presenter = new MainPresenter(mainFragment);
+        GuideFragment guideFragment = new GuideFragment();
+        presenter = new GuidePresenter(guideFragment);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.flContainer,mainFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.flContainer,guideFragment).commit();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.guide_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.menu_favourite:
-                return true;
-            case R.id.menu_guide:
-                Intent intent = new Intent(this, GuideActivity.class);
-                startActivity(intent);
-                return true;
             case R.id.menu_sort_name:
-                presenter.getChannelList(SortType.ByName);
+                presenter.getEventList(SortType.ByName);
                 return true;
             case R.id.menu_sort_number:
-                presenter.getChannelList(SortType.ByNumber);
+                presenter.getEventList(SortType.ByNumber);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -4,6 +4,8 @@ import com.zachary.astro.service.model.GetChannelListResponse;
 import com.zachary.astro.service.model.GetChannelsResponse;
 import com.zachary.astro.service.model.GetEventsResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -20,6 +22,6 @@ public interface AstroService {
     Call<GetChannelsResponse> getChannels();
 
     @GET("v3/getEvents")
-    Call<GetEventsResponse> getEvents();
+    Call<GetEventsResponse> getEvents(@Query("periodStart") String periodStart, @Query("periodEnd") String periodEnd, @Query("channelId")List<Integer> channelId);
 
 }

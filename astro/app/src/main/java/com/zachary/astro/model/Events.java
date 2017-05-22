@@ -21,6 +21,7 @@ public class Events extends BaseModel {
     private String displayDuration; //HH : mm
     private String siTracfficKey;
     private String programmeId;
+    private String programmeTitle;
     private String episodeId;
     private String shortSynopsis;
     private String longSynopsis;
@@ -235,5 +236,13 @@ public class Events extends BaseModel {
 
     public void setVernacularData(List<Vernacular> vernacularData) {
         this.vernacularData = vernacularData;
+    }
+
+    public String getProgrammeTitle() {
+        return programmeTitle;
+    }
+
+    public void setProgrammeTitle(String programmeTitle) {
+        this.programmeTitle = programmeTitle;
     }
 }
