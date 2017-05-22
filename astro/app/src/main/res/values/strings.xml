@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">astro</string>
+
+    <string name="facebook_app_id">651784728346134</string>
+    <string name="fb_login_protocol_scheme">fb651784728346134</string>
+
 </resources>
