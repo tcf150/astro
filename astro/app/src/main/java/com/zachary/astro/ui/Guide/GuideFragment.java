@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.zachary.astro.R;
 import com.zachary.astro.base.BaseFragment;
 import com.zachary.astro.model.Events;
+import com.zachary.astro.ui.common.OnRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,13 @@ public class GuideFragment extends BaseFragment implements GuideContract.View {
 
         adapter = new GuideAdapter(new ArrayList<Events>(0));
         rvEvent.setAdapter(adapter);
+
+        rvEvent.addOnScrollListener(new OnRecyclerViewScrollListener(linearLayoutManager){
+            @Override
+            public void onLoadMore() {
+                presenter.getEventList(false);
+            }
+        });
 
         return rootView;
     }

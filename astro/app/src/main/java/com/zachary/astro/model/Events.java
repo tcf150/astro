@@ -1,18 +1,8 @@
 package com.zachary.astro.model;
 
-import android.support.annotation.Nullable;
-
-import com.greasemonk.timetable.IGridItem;
-import com.greasemonk.timetable.TimeRange;
 import com.zachary.astro.base.BaseModel;
 
-import org.joda.time.DateTime;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by tongcheefei on 22/05/2017.

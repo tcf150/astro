@@ -18,7 +18,7 @@ public interface GuideContract {
     }
 
     interface Presenter extends BasePresenter {
-        void getEventList(int startPosition);
+        void getEventList(boolean isBegin);
         void setSortType(@SortType int sortType);
     }
 }

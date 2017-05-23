@@ -30,6 +30,7 @@ public class GuidePresenter implements GuideContract.Presenter {
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
     @SortType
     private int sortType = SortType.ByNumber;
+    private int currentPosition = 0;
 
     public GuidePresenter(GuideContract.View view) {
         this.view = view;
@@ -38,17 +39,21 @@ public class GuidePresenter implements GuideContract.Presenter {
 
     @Override
     public void start() {
-        getEventList(0);
+        getEventList(true);
     }
 
     @Override
-    public void getEventList(int startPosition) {
+    public void getEventList(boolean isBegin) {
+        if (isBegin){
+            view.clearEventList();
+            currentPosition = 0;
+        }
         List<Integer> channelIdList = new ArrayList<>();
         int size = DataManager.getInstance().getChannelListSize();
-        int endposition = (startPosition + 20) > size ? size : startPosition + 20;
+        final int endposition = (currentPosition + 20) > size ? size : currentPosition + 20;
         List<ChannelList> channelList = (sortType == SortType.ByName)
-                ? DataManager.getInstance().getChannelListByName().subList(startPosition,endposition)
-                : DataManager.getInstance().getChannelListByNumber().subList(startPosition,endposition);
+                ? DataManager.getInstance().getChannelListByName().subList(currentPosition,endposition)
+                : DataManager.getInstance().getChannelListByNumber().subList(currentPosition,endposition);
         for (ChannelList item : channelList){
             channelIdList.add(item.getChannelId());
         }
@@ -58,12 +63,13 @@ public class GuidePresenter implements GuideContract.Presenter {
         String currentDate = formatter.format(calendar.getTime());
         calendar.add(Calendar.MINUTE,30);
         String endDate = formatter.format(calendar.getTime());
-        if (startPosition == 0) view.clearEventList();
+
 
         Call<GetEventsResponse> call = BaseApiClient.getAstroService().getEvents(currentDate,endDate,channelIdList);
         call.enqueue(new Callback<GetEventsResponse>() {
             @Override
             public void onResponse(Call<GetEventsResponse> call, Response<GetEventsResponse> response) {
+                currentPosition = endposition;
                 GetEventsResponse getEventsResponse = response.body();
                 Log.d(TAG,"complete get event list");
                 if (getEventsResponse != null){
@@ -90,6 +96,6 @@ public class GuidePresenter implements GuideContract.Presenter {
     @Override
     public void setSortType(@SortType int sortType) {
         this.sortType = sortType;
-        getEventList(0);
+        getEventList(true);
     }
 }

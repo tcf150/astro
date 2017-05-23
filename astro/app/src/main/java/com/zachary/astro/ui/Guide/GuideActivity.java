@@ -47,10 +47,10 @@ public class GuideActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_sort_name:
-                presenter.getEventList(SortType.ByName);
+                presenter.setSortType(SortType.ByName);
                 return true;
             case R.id.menu_sort_number:
-                presenter.getEventList(SortType.ByNumber);
+                presenter.setSortType(SortType.ByNumber);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
