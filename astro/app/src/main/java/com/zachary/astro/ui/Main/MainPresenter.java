@@ -20,7 +20,12 @@ import com.zachary.astro.model.ChannelList;
 import com.zachary.astro.model.User;
 import com.zachary.astro.model.annotation.SSOType;
 import com.zachary.astro.model.annotation.SortType;
+import com.zachary.astro.service.model.AddFavouriteResponse;
+import com.zachary.astro.service.model.CreateUserResponse;
 import com.zachary.astro.service.model.GetChannelListResponse;
+import com.zachary.astro.service.model.GetFavouriteListResponse;
+import com.zachary.astro.service.model.GetUserDetailResponse;
+import com.zachary.astro.service.model.RemoveFavouriteResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +51,52 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void start() {
-        getChannelList();
+        if (UserManager.getInstance().hasUserId()){
+            getChannelList();
+        }else {
+            String cacheUserId = UserManager.getInstance().getUserIdCache();
+            if (cacheUserId != null && cacheUserId.length() > 0) {
+                Call<GetUserDetailResponse> call = BaseApiClient.getAstroUserService().getUserDetail(Integer.valueOf(cacheUserId));
+                call.enqueue(new Callback<GetUserDetailResponse>() {
+                    @Override
+                    public void onResponse(Call<GetUserDetailResponse> call, Response<GetUserDetailResponse> response) {
+                        GetUserDetailResponse getUserDetailResponse = response.body();
+                        User user = getUserDetailResponse.getUser();
+                        if (user != null) {
+                            UserManager.getInstance().setUser(user);
+                            getFavouriteList();
+                        } else {
+                            UserManager.getInstance().setUserIdCache("");
+                            getChannelList();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GetUserDetailResponse> call, Throwable t) {
+                        UserManager.getInstance().setUserIdCache("");
+                    }
+                });
+            } else {
+                getChannelList();
+            }
+        }
+    }
+
+    private void getFavouriteList(){
+        Call<GetFavouriteListResponse> call = BaseApiClient.getAstroUserService().getFavouriteList(Integer.valueOf(UserManager.getInstance().getUserId()));
+        call.enqueue(new Callback<GetFavouriteListResponse>() {
+            @Override
+            public void onResponse(Call<GetFavouriteListResponse> call, Response<GetFavouriteListResponse> response) {
+                GetFavouriteListResponse getFavouriteListResponse = response.body();
+                UserManager.getInstance().addFavouriteChannelList(getFavouriteListResponse.getFavouriteList());
+                getChannelList();
+            }
+
+            @Override
+            public void onFailure(Call<GetFavouriteListResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -115,18 +165,68 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void favouriteChannel(ChannelList channel) {
+    public void favouriteChannel(final ChannelList channel) {
         if (UserManager.getInstance().hasUserId()){
             //logined
             if (channel.isFavourite()){
-                UserManager.getInstance().removeFavouriteChannel(channel);
                 DataManager.getInstance().updateChannelList(channel.getChannelId(),false);
+
+                final ChannelList favouriteChannel = UserManager.getInstance().getFavouriteById(channel.getChannelId());
+                if (favouriteChannel != null) {
+                    Call<RemoveFavouriteResponse> call = BaseApiClient.getAstroUserService().removeFavourite(favouriteChannel.getFavouriteId());
+                    call.enqueue(new Callback<RemoveFavouriteResponse>() {
+                        @Override
+                        public void onResponse(Call<RemoveFavouriteResponse> call, Response<RemoveFavouriteResponse> response) {
+                            RemoveFavouriteResponse removeFavouriteResponse = response.body();
+                            if (!removeFavouriteResponse.isSuccess()){
+                                DataManager.getInstance().updateChannelList(channel.getChannelId(),true);
+                                view.displayErrorToast(removeFavouriteResponse.getResponseMessage());
+                                getChannelList();
+                            }else{
+                                UserManager.getInstance().removeFavouriteChannel(favouriteChannel.getFavouriteId());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<RemoveFavouriteResponse> call, Throwable t) {
+                            DataManager.getInstance().updateChannelList(channel.getChannelId(),true);
+                            view.displayErrorToast(t.getMessage());
+                            getChannelList();
+                        }
+                    });
+                }
             }else{
-                UserManager.getInstance().addFavouriteChannel(channel);
                 DataManager.getInstance().updateChannelList(channel.getChannelId(),true);
+
+                Call<AddFavouriteResponse> call = BaseApiClient.getAstroUserService().addFavourite(Integer.valueOf(UserManager.getInstance().getUserId()),channel.getChannelId(), channel.getChannelTitle(),channel.getChannelStbNumber());
+                call.enqueue(new Callback<AddFavouriteResponse>() {
+                    @Override
+                    public void onResponse(Call<AddFavouriteResponse> call, Response<AddFavouriteResponse> response) {
+                        AddFavouriteResponse addFavouriteResponse = response.body();
+                        if (!addFavouriteResponse.isSuccess()){
+                            DataManager.getInstance().updateChannelList(channel.getChannelId(),false);
+                            view.displayErrorToast(addFavouriteResponse.getResponseMessage());
+                            getChannelList();
+                        }else{
+                            ChannelList item = new ChannelList();
+                            item.setFavouriteId(addFavouriteResponse.getFavouriteId());
+                            item.setChannelId(channel.getChannelId());
+                            item.setChannelTitle(channel.getChannelTitle());
+                            item.setChannelStbNumber(channel.getChannelStbNumber());
+                            item.setFavourite(true);
+                            UserManager.getInstance().addFavouriteChannel(item);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AddFavouriteResponse> call, Throwable t) {
+                        DataManager.getInstance().updateChannelList(channel.getChannelId(),false);
+                        view.displayErrorToast(t.getMessage());
+                        getChannelList();
+                    }
+                });
             }
             getChannelList();
-            //todo fire api
         }else{
             //no user account
             view.displayLoginDialog();
@@ -173,19 +273,30 @@ public class MainPresenter implements MainContract.Presenter {
                     @Override
                     public void onCompleted(GraphResponse response) {
                         try{
-                            User user = new User();
-                            user.setSsoType(SSOType.FACEBOOK);
-                            user.setSocialId(response.getJSONObject().get("id").toString());
-
-                            String userId = UserManager.createUser(user);
-                            if (userId != null) {
-                                User userDetail = UserManager.getUserDetail(userId);
-                                UserManager.getInstance().setUser(userDetail);
-
-                                for (ChannelList channelList : userDetail.getFavouriteList()){
-                                    DataManager.getInstance().updateChannelList(channelList.getChannelId(), true);
+                            final String socialId = response.getJSONObject().get("id").toString();
+                            Call<CreateUserResponse> call = BaseApiClient.getAstroUserService().createUser(socialId,SSOType.FACEBOOK);
+                            call.enqueue(new Callback<CreateUserResponse>() {
+                                @Override
+                                public void onResponse(Call<CreateUserResponse> call, Response<CreateUserResponse> response) {
+                                    CreateUserResponse createUserResponse = response.body();
+                                    if (createUserResponse.isSuccess() || createUserResponse.getResponseCode().equals("201")){
+                                        User user = new User();
+                                        user.setUserId(String.valueOf(createUserResponse.getUserId()));
+                                        user.setSocialId(socialId);
+                                        user.setSsoType(SSOType.FACEBOOK);
+                                        UserManager.getInstance().setUser(user);
+                                        UserManager.getInstance().setUserIdCache(String.valueOf(createUserResponse.getUserId()));
+                                        getFavouriteList();
+                                    }else{
+                                        view.displayErrorToast(createUserResponse.getResponseMessage());
+                                    }
                                 }
-                            }
+
+                                @Override
+                                public void onFailure(Call<CreateUserResponse> call, Throwable t) {
+
+                                }
+                            });
                         }catch (Exception e){
                             e.printStackTrace();
                         }

@@ -7,6 +7,7 @@ import com.zachary.astro.base.BaseModel;
  */
 
 public class ChannelList extends BaseModel {
+    private int favouriteId;
     private int channelId;
     private String channelTitle;
     private int channelStbNumber;
@@ -42,5 +43,13 @@ public class ChannelList extends BaseModel {
 
     public void setFavourite(boolean favourite) {
         isFavourite = favourite;
+    }
+
+    public int getFavouriteId() {
+        return favouriteId;
+    }
+
+    public void setFavouriteId(int favouriteId) {
+        this.favouriteId = favouriteId;
     }
 }

@@ -1,6 +1,7 @@
 package com.zachary.astro.base;
 
 import com.zachary.astro.service.AstroService;
+import com.zachary.astro.service.AstroUserService;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -11,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BaseApiClient {
     private static AstroService service;
+    private static AstroUserService userService;
 
     public static AstroService getAstroService(){
         if (service == null) {
@@ -22,5 +24,17 @@ public class BaseApiClient {
             service = retrofit.create(AstroService.class);
         }
         return service;
+    }
+
+    public static AstroUserService getAstroUserService(){
+        if (userService == null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://zacharytongreddit.000webhostapp.com/astro/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            userService = retrofit.create(AstroUserService.class);
+        }
+        return userService;
     }
 }

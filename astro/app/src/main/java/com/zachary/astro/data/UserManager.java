@@ -3,20 +3,12 @@ package com.zachary.astro.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.amazonaws.mobile.AWSMobileClient;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBDeleteExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
-import com.amazonaws.models.nosql.FavouriteDO;
-import com.amazonaws.models.nosql.UserDO;
 import com.zachary.astro.model.Channel;
 import com.zachary.astro.model.ChannelList;
 import com.zachary.astro.model.User;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,6 +23,7 @@ public class UserManager {
     private final static UserManager ourInstance = new UserManager();
 
     private User user;
+    private SharedPreferences sharedPreferences;
 
     public static UserManager getInstance() {
         return ourInstance;
@@ -40,37 +33,18 @@ public class UserManager {
         user = new User();
     }
 
-    public static String getUserIdCache(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_BUNDLE,Context.MODE_PRIVATE);
+    public void init(Context context){
+        sharedPreferences = context.getSharedPreferences(USER_BUNDLE,Context.MODE_PRIVATE);
+    }
+
+    public String getUserIdCache(){
         return sharedPreferences.getString(USER_ID,"");
     }
 
-    public static void setUserIdCache(Context context,String userId){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_BUNDLE,Context.MODE_PRIVATE);
+    public void setUserIdCache(String userId){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(USER_ID,userId);
         editor.commit();
-    }
-
-    public static User getUserDetail(String userId){
-       return null;
-    }
-
-    public static List<ChannelList> getUserFavouriteList(String userId){
-        List<ChannelList> channelList = new ArrayList<>();
-        return channelList;
-    }
-
-    public static String createUser(User user){
-        return null;
-    }
-
-    private void likeChannel(ChannelList channel){
-
-    }
-
-    private void unlikeChannel(ChannelList channel){
-
     }
 
     public String getUserId(){
@@ -89,14 +63,38 @@ public class UserManager {
         return user.getFavouriteList();
     }
 
+    public ChannelList getFavouriteById(int channelId){
+        for (ChannelList channel : user.getFavouriteList()){
+            if (channel.getChannelId() == channelId){
+                return channel;
+            }
+        }
+        return null;
+    }
+
+    public void addFavouriteChannelList(List<ChannelList> channelList){
+        if (channelList == null) return;
+        this.user.getFavouriteList().clear();
+        this.user.getFavouriteList().addAll(channelList);
+
+        DataManager manager = DataManager.getInstance();
+        for (ChannelList item : channelList){
+            manager.updateChannelList(item.getChannelId(),true);
+        }
+    }
+
     public void addFavouriteChannel(ChannelList channel){
-        likeChannel(channel);
         this.user.getFavouriteList().add(channel);
     }
 
-    public void removeFavouriteChannel(ChannelList channel){
-        unlikeChannel(channel);
-        this.user.getFavouriteList().remove(channel);
+    public void removeFavouriteChannel(int favouriteId){
+        Iterator<ChannelList> iterator = user.getFavouriteList().iterator();
+        while (iterator.hasNext()){
+            ChannelList item = iterator.next();
+            if (item.getFavouriteId() == favouriteId){
+                iterator.remove();
+            }
+        }
     }
 
     public void setUser(User user){

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.facebook.CallbackManager;
 import com.zachary.astro.R;
 import com.zachary.astro.base.BaseFragment;
+import com.zachary.astro.data.UserManager;
 import com.zachary.astro.model.ChannelList;
 
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
     @Override
     public void onResume() {
         super.onResume();
+
         presenter.start();
     }
 

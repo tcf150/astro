@@ -19,16 +19,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-        String cacheUserId = UserManager.getUserIdCache(this);
-        if (cacheUserId != null && cacheUserId.length() > 0){
-            User user = UserManager.getUserDetail(cacheUserId);
-            if (user != null){
-                UserManager.getInstance().setUser(user);
-            }else{
-                UserManager.setUserIdCache(this,"");
-            }
-        }
+        UserManager.getInstance().init(this);
 //        screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
 //        screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     }
