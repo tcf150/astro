@@ -1,6 +1,7 @@
 package com.zachary.astro.data;
 
 import com.zachary.astro.model.ChannelList;
+import com.zachary.astro.model.annotation.SortType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,7 @@ public class DataManager {
     private final static DataManager instance = new DataManager();
 
     private List<ChannelList> channelList = new ArrayList<>();
+    private int channelSortType = -1;
 
     public DataManager(){}
 
@@ -23,20 +25,26 @@ public class DataManager {
     }
 
     public List<ChannelList> getChannelListByName(){
-        Collections.sort(channelList, new Comparator<ChannelList>(){
-            public int compare(ChannelList obj1, ChannelList obj2) {
-                return obj1.getChannelTitle().compareToIgnoreCase(obj2.getChannelTitle()); // To compare string values
-            }
-        });
+        if (channelSortType != SortType.ByName) {
+            Collections.sort(channelList, new Comparator<ChannelList>() {
+                public int compare(ChannelList obj1, ChannelList obj2) {
+                    return obj1.getChannelTitle().compareToIgnoreCase(obj2.getChannelTitle()); // To compare string values
+                }
+            });
+            channelSortType = SortType.ByName;
+        }
         return channelList;
     }
 
     public List<ChannelList> getChannelListByNumber(){
-        Collections.sort(channelList, new Comparator<ChannelList>(){
-            public int compare(ChannelList obj1, ChannelList obj2) {
-                return Integer.valueOf(obj1.getChannelStbNumber()).compareTo(obj2.getChannelStbNumber()); // To compare string values
-            }
-        });
+        if (channelSortType != SortType.ByNumber) {
+            Collections.sort(channelList, new Comparator<ChannelList>() {
+                public int compare(ChannelList obj1, ChannelList obj2) {
+                    return Integer.valueOf(obj1.getChannelStbNumber()).compareTo(obj2.getChannelStbNumber()); // To compare string values
+                }
+            });
+            channelSortType = SortType.ByNumber;
+        }
         return channelList;
     }
 
