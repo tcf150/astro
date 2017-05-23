@@ -9,6 +9,8 @@ import com.zachary.astro.model.User;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -63,6 +65,25 @@ public class UserManager {
         return user.getFavouriteList();
     }
 
+    public List<ChannelList> getFavouriteListByName(){
+        Collections.sort(user.getFavouriteList(), new Comparator<ChannelList>() {
+            public int compare(ChannelList obj1, ChannelList obj2) {
+                return obj1.getChannelTitle().compareToIgnoreCase(obj2.getChannelTitle()); // To compare string values
+            }
+        });
+        return user.getFavouriteList();
+    }
+
+    public List<ChannelList> getFavouriteListByNumber(){
+        Collections.sort(user.getFavouriteList(), new Comparator<ChannelList>() {
+            public int compare(ChannelList obj1, ChannelList obj2) {
+                return Integer.valueOf(obj1.getChannelStbNumber()).compareTo(obj2.getChannelStbNumber()); // To compare string values
+            }
+        });
+        return user.getFavouriteList();
+    }
+
+
     public ChannelList getFavouriteById(int channelId){
         for (ChannelList channel : user.getFavouriteList()){
             if (channel.getChannelId() == channelId){
@@ -79,6 +100,7 @@ public class UserManager {
 
         DataManager manager = DataManager.getInstance();
         for (ChannelList item : channelList){
+            item.setFavourite(true);
             manager.updateChannelList(item.getChannelId(),true);
         }
     }

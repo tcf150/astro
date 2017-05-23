@@ -18,6 +18,7 @@ import com.zachary.astro.R;
 import com.zachary.astro.base.BaseFragment;
 import com.zachary.astro.data.UserManager;
 import com.zachary.astro.model.ChannelList;
+import com.zachary.astro.ui.Favourite.FavouriteActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +105,12 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
             }
         });
         builder.create().show();
+    }
+
+    @Override
+    public void gotoFavourite() {
+        Intent intent = new Intent(getContext(), FavouriteActivity.class);
+        startActivity(intent);
     }
 
     @Override

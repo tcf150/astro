@@ -165,6 +165,15 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void onFavouriteMenuClick() {
+        if (UserManager.getInstance().hasUserId()){
+            view.gotoFavourite();
+        }else{
+            view.displayLoginDialog();
+        }
+    }
+
+    @Override
     public void favouriteChannel(final ChannelList channel) {
         if (UserManager.getInstance().hasUserId()){
             //logined
