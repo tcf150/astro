@@ -1,23 +1,33 @@
 package com.zachary.astro.model;
 
+import android.support.annotation.Nullable;
+
+import com.greasemonk.timetable.IGridItem;
+import com.greasemonk.timetable.TimeRange;
 import com.zachary.astro.base.BaseModel;
 
+import org.joda.time.DateTime;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by tongcheefei on 22/05/2017.
  */
 
 public class Events extends BaseModel {
+
     private String eventId;
     private int channelId;
     private String channelStbNumber;
     private String channelHD;
     private String channelTitle;
     private String certification;
-    private Date displayDateTimeUtc;
-    private Date getDisplayDateTime; //YYYY-mm-dd HH:mm:sssz
+    private String displayDateTimeUtc;
+    private String displayDateTime; //YYYY-mm-dd HH:mm:sssz
     private String displayDuration; //HH : mm
     private String siTracfficKey;
     private String programmeId;
@@ -86,20 +96,20 @@ public class Events extends BaseModel {
         this.certification = certification;
     }
 
-    public Date getDisplayDateTimeUtc() {
+    public String getDisplayDateTimeUtc() {
         return displayDateTimeUtc;
     }
 
-    public void setDisplayDateTimeUtc(Date displayDateTimeUtc) {
+    public void setDisplayDateTimeUtc(String displayDateTimeUtc) {
         this.displayDateTimeUtc = displayDateTimeUtc;
     }
 
-    public Date getGetDisplayDateTime() {
-        return getDisplayDateTime;
+    public String getDisplayDateTime() {
+        return displayDateTime;
     }
 
-    public void setGetDisplayDateTime(Date getDisplayDateTime) {
-        this.getDisplayDateTime = getDisplayDateTime;
+    public void setDisplayDateTime(String displayDateTime) {
+        this.displayDateTime = displayDateTime;
     }
 
     public String getDisplayDuration() {

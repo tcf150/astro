@@ -1,32 +1,34 @@
 package com.zachary.astro.ui.Guide;
 
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.zachary.astro.R;
 import com.zachary.astro.base.BaseViewHolder;
 import com.zachary.astro.model.Events;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by user on 23/5/2017.
  */
 
 public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.ViewHolder>{
-    private SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:sss");
+    private SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
 
     private List<Events> eventsList;
 
     public GuideAdapter(List<Events> eventsList){
         this.eventsList = eventsList;
+        dateFormatter.setTimeZone(TimeZone.getDefault());
+        formatter.setTimeZone(TimeZone.getDefault());
     }
 
     public void addList(List<Events> eventsList){
@@ -72,7 +74,14 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.ViewHolder>{
             super.bindData(model);
             tvChannelName.setText(model.getChannelTitle());
             tvProgrammeTitle.setText(model.getProgrammeTitle());
-            tvProgrammeTime.setText(formatter.format(model.getGetDisplayDateTime()));
+            try{
+                Date date = dateFormatter.parse(model.getDisplayDateTime());
+                tvProgrammeTime.setText(formatter.format(date));
+            }catch (Exception e){
+                e.printStackTrace();
+                tvProgrammeTime.setText(model.getDisplayDateTime());
+            }
+
         }
     }
 }

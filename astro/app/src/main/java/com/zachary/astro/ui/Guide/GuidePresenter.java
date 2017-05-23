@@ -27,7 +27,7 @@ public class GuidePresenter implements GuideContract.Presenter {
     private final static String TAG = "GuidePresenter";
     private final GuideContract.View view;
 
-    private SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd hh:mm");
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
     @SortType
     private int sortType = SortType.ByNumber;
 
@@ -44,9 +44,11 @@ public class GuidePresenter implements GuideContract.Presenter {
     @Override
     public void getEventList(int startPosition) {
         List<Integer> channelIdList = new ArrayList<>();
+        int size = DataManager.getInstance().getChannelListSize();
+        int endposition = (startPosition + 20) > size ? size : startPosition + 20;
         List<ChannelList> channelList = (sortType == SortType.ByName)
-                ? DataManager.getInstance().getChannelListByName().subList(startPosition,startPosition + 20)
-                : DataManager.getInstance().getChannelListByNumber().subList(startPosition,startPosition + 20);
+                ? DataManager.getInstance().getChannelListByName().subList(startPosition,endposition)
+                : DataManager.getInstance().getChannelListByNumber().subList(startPosition,endposition);
         for (ChannelList item : channelList){
             channelIdList.add(item.getChannelId());
         }
@@ -54,7 +56,7 @@ public class GuidePresenter implements GuideContract.Presenter {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getDefault());
         String currentDate = formatter.format(calendar.getTime());
-        calendar.add(Calendar.MINUTE,1);
+        calendar.add(Calendar.MINUTE,30);
         String endDate = formatter.format(calendar.getTime());
         if (startPosition == 0) view.clearEventList();
 
