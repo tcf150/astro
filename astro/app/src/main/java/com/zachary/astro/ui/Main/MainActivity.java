@@ -1,5 +1,7 @@
 package com.zachary.astro.ui.Main;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -45,6 +47,9 @@ public class MainActivity extends BaseAppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.menu_logout:
+                logout();
+                return true;
             case R.id.menu_favourite:
                 presenter.onFavouriteMenuClick();
                 return true;
@@ -61,5 +66,19 @@ public class MainActivity extends BaseAppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void logout(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.logout);
+        builder.setMessage(R.string.logout_desc);
+        builder.setPositiveButton(R.string.no, null);
+        builder.setNegativeButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.logout();
+            }
+        });
+        builder.create().show();
     }
 }

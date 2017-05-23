@@ -301,6 +301,13 @@ public class MainPresenter implements MainContract.Presenter {
         });
     }
 
+    @Override
+    public void logout() {
+        UserManager.getInstance().clearCache();
+        DataManager.getInstance().clearChannelListFavourite();
+        getChannelList();
+    }
+
     private void getFacebookGraph(AccessToken accessToken){
         Bundle paramter = new Bundle();
         paramter.putString("fields","id,email,name");

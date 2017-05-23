@@ -65,4 +65,10 @@ public class DataManager {
         }
     }
 
+    public void clearChannelListFavourite(){
+        for (ChannelList channel : channelList){
+            channel.setFavourite(false);
+        }
+    }
+
 }

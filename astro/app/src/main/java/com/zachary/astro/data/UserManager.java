@@ -137,22 +137,8 @@ public class UserManager {
         return false;
     }
 
-    private static String hashKey(String value){
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.reset();
-            digest.update(value.getBytes());
-
-            StringBuffer buffer = new StringBuffer();
-            for (byte bt : digest.digest()){
-                String hex = Integer.toHexString(0xFF & bt);
-                if (hex.length() == 1) buffer.append('0');
-                buffer.append(hex);
-            }
-            return buffer.toString();
-        }catch (Exception e){
-            e.printStackTrace();
-            return value;
-        }
-    }
+   public void clearCache(){
+       sharedPreferences.edit().clear().commit();
+       user = new User();
+   }
 }

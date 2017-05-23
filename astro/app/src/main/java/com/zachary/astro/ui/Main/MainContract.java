@@ -29,5 +29,6 @@ public interface MainContract {
         void updateChannelSort(@SortType int sortType);
         void facebookLogin(Fragment fragment, CallbackManager callbackManager);
         void googleLogin(String socialId);
+        void logout();
     }
 }
