@@ -17,6 +17,8 @@ import com.zachary.astro.base.BaseApiClient;
 import com.zachary.astro.data.DataManager;
 import com.zachary.astro.data.UserManager;
 import com.zachary.astro.model.ChannelList;
+import com.zachary.astro.model.User;
+import com.zachary.astro.model.annotation.SSOType;
 import com.zachary.astro.model.annotation.SortType;
 import com.zachary.astro.service.model.GetChannelListResponse;
 
@@ -170,9 +172,23 @@ public class MainPresenter implements MainContract.Presenter {
 
                     @Override
                     public void onCompleted(GraphResponse response) {
-//                        response.getJSONObject().get("me").toString()
-//                        response.getJSONObject().has("email")
-//                        response.getJSONObject().get("id").toString()
+                        try{
+                            User user = new User();
+                            user.setSsoType(SSOType.FACEBOOK);
+                            user.setSocialId(response.getJSONObject().get("id").toString());
+
+                            String userId = UserManager.createUser(user);
+                            if (userId != null) {
+                                User userDetail = UserManager.getUserDetail(userId);
+                                UserManager.getInstance().setUser(userDetail);
+
+                                for (ChannelList channelList : userDetail.getFavouriteList()){
+                                    DataManager.getInstance().updateChannelList(channelList.getChannelId(), true);
+                                }
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 });
         request.executeAsync();
