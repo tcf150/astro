@@ -26,6 +26,7 @@ public class FavouriteActivity extends BaseAppCompatActivity {
     protected void setupUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FavouriteFragment favouriteFragment = new FavouriteFragment();
         presenter = new FavouritePresenter(favouriteFragment);

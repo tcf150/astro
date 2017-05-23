@@ -29,7 +29,7 @@ public class GuideActivity extends BaseAppCompatActivity {
     protected void setupUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         GuideFragment guideFragment = new GuideFragment();
         presenter = new GuidePresenter(guideFragment);
 

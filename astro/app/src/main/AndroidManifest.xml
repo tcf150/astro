@@ -48,10 +48,12 @@
 
         <activity
             android:name=".ui.Guide.GuideActivity"
+            android:label="@string/tv_guide"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.Favourite.FavouriteActivity"
+            android:label="@string/favourite"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
