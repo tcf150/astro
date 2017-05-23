@@ -274,8 +274,31 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void googleLogin() {
+    public void googleLogin(final String socialId) {
+        Call<CreateUserResponse> call = BaseApiClient.getAstroUserService().createUser(socialId,SSOType.GOOGLE);
+        call.enqueue(new Callback<CreateUserResponse>() {
+            @Override
+            public void onResponse(Call<CreateUserResponse> call, Response<CreateUserResponse> response) {
+                CreateUserResponse createUserResponse = response.body();
+                if (createUserResponse.isSuccess() || createUserResponse.getResponseCode().equals("201")){
+                    User user = new User();
+                    user.setUserId(String.valueOf(createUserResponse.getUserId()));
+                    user.setSocialId(socialId);
+                    user.setSsoType(SSOType.GOOGLE);
+                    UserManager.getInstance().setUser(user);
+                    UserManager.getInstance().setUserIdCache(String.valueOf(createUserResponse.getUserId()));
+                    getFavouriteList();
+                }else{
+                    view.displayErrorToast(createUserResponse.getResponseMessage());
+                }
+                view.showLoading(false);
+            }
 
+            @Override
+            public void onFailure(Call<CreateUserResponse> call, Throwable t) {
+                view.showLoading(false);
+            }
+        });
     }
 
     private void getFacebookGraph(AccessToken accessToken){

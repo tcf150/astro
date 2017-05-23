@@ -1,10 +1,13 @@
 package com.zachary.astro.ui.Main;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +18,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.zachary.astro.R;
+import com.zachary.astro.base.BaseAppCompatActivity;
 import com.zachary.astro.base.BaseFragment;
 import com.zachary.astro.data.UserManager;
 import com.zachary.astro.model.ChannelList;
@@ -29,6 +39,8 @@ import java.util.List;
  */
 
 public class MainFragment extends BaseFragment implements MainContract.View,ChannelAdapter.OnFavouriteClickListener{
+    private final static int RC_SIGN_IN = 125;
+    private final static int PERMISSION_CODE = 123;
     private MainContract.Presenter presenter;
 
     private RecyclerView rvChannel;
@@ -87,6 +99,26 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode,resultCode,data);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // Signed in successfully, show authenticated UI.
+                GoogleSignInAccount acct = result.getSignInAccount();
+                presenter.googleLogin(acct.getId());
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                performanceGoogleLogin();
+            } else {
+                showAppPermissionDialog(R.string.permission_request_user_detail);
+            }
+        }
     }
 
     @Override
@@ -109,7 +141,7 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
         builder.setPositiveButton(R.string.dialog_login_google, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                presenter.googleLogin();
+                googleLogin();
             }
         });
         builder.create().show();
@@ -119,6 +151,36 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
     public void gotoFavourite() {
         Intent intent = new Intent(getContext(), FavouriteActivity.class);
         startActivity(intent);
+    }
+
+    public void googleLogin(){
+        if (checkAppPermission(Manifest.permission.GET_ACCOUNTS)) {
+            performanceGoogleLogin();
+        }else{
+            if (checkAppPermissionRationale(Manifest.permission.GET_ACCOUNTS)){
+                showAppPermissionDialog(R.string.permission_request_user_detail);
+            }else{
+                requestAppPermission(Manifest.permission.GET_ACCOUNTS,PERMISSION_CODE);
+            }
+        }
+    }
+
+    public void performanceGoogleLogin(){
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .enableAutoManage(getActivity(), new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        showLoading(false);
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override

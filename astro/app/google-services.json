@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "790344820049",
+    "project_id": "firebase-zacharyastro"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790344820049:android:419bbf13a6b6f9b1",
+        "android_client_info": {
+          "package_name": "com.zachary.astro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "790344820049-bvrl46lle5pdrhkk4v67vjmv6lekchc4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zachary.astro",
+            "certificate_hash": "edac6d600fdf217cea7bedb2ade8047b5a81b9aa"
+          }
+        },
+        {
+          "client_id": "790344820049-1sk33fk8fb6v80c6ns3evjukcj8f0sac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBq7feOYt4wZSXlc6GXFaY5m6Ndp7xv0CE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

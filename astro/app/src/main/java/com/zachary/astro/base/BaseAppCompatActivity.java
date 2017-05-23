@@ -24,7 +24,6 @@ import com.zachary.astro.R;
  */
 
 public abstract class BaseAppCompatActivity extends AppCompatActivity {
-    protected final static int PERMISSION_REQUEST_CODE = 111;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,52 +71,5 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
      */
     protected <T extends View> T getViewByView(View view, @IdRes int resId){
         return (T) view.findViewById(resId);
-    }
-
-    /**
-     * check permission
-     * @param permission Manifest.permission
-     * @return boolean
-     */
-    protected boolean checkAppPermission(@NonNull String permission){
-        switch (ContextCompat.checkSelfPermission(this,permission)){
-            case PackageManager.PERMISSION_GRANTED:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    protected boolean checkAppPermissionRationale(@NonNull String permission){
-        return ActivityCompat.shouldShowRequestPermissionRationale(this,permission);
-    }
-
-    protected void requestAppPermission(@NonNull String permission, int requestCode){
-        ActivityCompat.requestPermissions(this,new String[]{permission},requestCode);
-    }
-
-    protected void showAppPermissionDialog(@StringRes int resId){
-        showAppPermissionDialog(resId,null);
-    }
-
-    protected void showAppPermissionDialog(@StringRes int resId, @Nullable DialogInterface.OnClickListener onClickListener){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.permission_title);
-        builder.setPositiveButton(R.string.permission_update, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package",getPackageName(),null);
-                intent.setData(uri);
-                startActivityForResult(intent,PERMISSION_REQUEST_CODE);
-            }
-        });
-        builder.setNegativeButton(R.string.permission_not_now,onClickListener);
-        builder.setMessage(resId);
-
-        AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
     }
 }

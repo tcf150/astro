@@ -28,6 +28,6 @@ public interface MainContract {
         void getChannelList();
         void updateChannelSort(@SortType int sortType);
         void facebookLogin(Fragment fragment, CallbackManager callbackManager);
-        void googleLogin();
+        void googleLogin(String socialId);
     }
 }
