@@ -22,6 +22,8 @@ import java.util.TimeZone;
 public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.ViewHolder>{
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:sss");
     private SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+    private final static int TYPE_LOADING = 1;
+    private final static int TYPE_ITEM = 0;
 
     private List<Events> eventsList;
 
@@ -41,10 +43,36 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.ViewHolder>{
         notifyDataSetChanged();
     }
 
+    public void showProgress(boolean show){
+        if (show){
+            if (!eventsList.contains(null)){
+                eventsList.add(null);
+            }
+        }else {
+            eventsList.remove(null);
+        }
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (eventsList.get(position) == null) return TYPE_LOADING;
+        return TYPE_ITEM;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_guide,parent,false);
-        return new ViewHolder(view);
+        switch (viewType){
+            default:
+            case TYPE_ITEM:{
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_guide,parent,false);
+                return new ViewHolderEvent(view);
+            }
+            case TYPE_LOADING:{
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading,parent,false);
+                return new ViewHolder(view);
+            }
+        }
     }
 
     @Override
@@ -58,11 +86,18 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.ViewHolder>{
     }
 
     public class ViewHolder extends BaseViewHolder<Events>{
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public class ViewHolderEvent extends ViewHolder{
         TextView tvChannelName;
         TextView tvProgrammeTitle;
         TextView tvProgrammeTime;
 
-        public ViewHolder(View itemView) {
+        public ViewHolderEvent(View itemView) {
             super(itemView);
             tvChannelName = (TextView) itemView.findViewById(R.id.tvChannelName);
             tvProgrammeTitle = (TextView) itemView.findViewById(R.id.tvProgrammeTitle);

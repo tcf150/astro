@@ -64,7 +64,7 @@ public class GuidePresenter implements GuideContract.Presenter {
         calendar.add(Calendar.MINUTE,30);
         String endDate = formatter.format(calendar.getTime());
 
-
+        view.showProgress(true);
         Call<GetEventsResponse> call = BaseApiClient.getAstroService().getEvents(currentDate,endDate,channelIdList);
         call.enqueue(new Callback<GetEventsResponse>() {
             @Override
@@ -82,13 +82,14 @@ public class GuidePresenter implements GuideContract.Presenter {
                         view.displayErrorToast(getEventsResponse.getResponseMessage());
                     }
                 }
+                view.showProgress(false);
             }
 
             @Override
             public void onFailure(Call<GetEventsResponse> call, Throwable t) {
                 t.printStackTrace();
                 view.displayErrorToast(t.getMessage());
-
+                view.showProgress(false);
             }
         });
     }

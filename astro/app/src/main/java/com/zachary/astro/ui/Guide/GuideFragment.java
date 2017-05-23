@@ -81,4 +81,9 @@ public class GuideFragment extends BaseFragment implements GuideContract.View {
     public void addEventList(List<Events> eventsList) {
         adapter.addList(eventsList);
     }
+
+    @Override
+    public void showProgress(boolean show) {
+        adapter.showProgress(show);
+    }
 }

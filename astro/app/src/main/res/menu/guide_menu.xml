@@ -5,10 +5,10 @@
     <item
         android:id="@+id/menu_sort_number"
         android:title="@string/sort_channel_number"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="collapseActionView" />
 
     <item
         android:id="@+id/menu_sort_name"
         android:title="@string/sort_channel_name"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="collapseActionView" />
 </menu>

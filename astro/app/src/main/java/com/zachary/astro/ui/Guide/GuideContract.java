@@ -15,6 +15,7 @@ public interface GuideContract {
     interface View extends BaseView<Presenter> {
         void clearEventList();
         void addEventList(List<Events> eventsList);
+        void showProgress(boolean show);
     }
 
     interface Presenter extends BasePresenter {
