@@ -52,10 +52,10 @@ public class MainActivity extends BaseAppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.menu_sort_name:
-                presenter.getChannelList(SortType.ByName);
+                presenter.updateChannelSort(SortType.ByName);
                 return true;
             case R.id.menu_sort_number:
-                presenter.getChannelList(SortType.ByNumber);
+                presenter.updateChannelSort(SortType.ByNumber);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

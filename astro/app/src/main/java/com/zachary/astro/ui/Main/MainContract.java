@@ -21,7 +21,8 @@ public interface MainContract {
 
     interface Presenter extends BasePresenter {
         void favouriteChannel(ChannelList channel);
-        void getChannelList(@SortType int sortType);
+        void getChannelList();
+        void updateChannelSort(@SortType int sortType);
         void facebookLogin(Fragment fragment, CallbackManager callbackManager);
     }
 }

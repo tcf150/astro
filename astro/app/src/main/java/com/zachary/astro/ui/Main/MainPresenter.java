@@ -35,6 +35,8 @@ public class MainPresenter implements MainContract.Presenter {
     private final static String TAG = "MainPresenter";
     private final MainContract.View view;
 
+    private int channelSortType = SortType.ByNumber;
+
     public MainPresenter(MainContract.View view){
         this.view = view;
         this.view.setPresenter(this);
@@ -42,11 +44,11 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void start() {
-        getChannelList(SortType.ByNumber);
+        getChannelList();
     }
 
     @Override
-    public void getChannelList(@SortType final int sortType){
+    public void getChannelList(){
         if (DataManager.getInstance().getChannelListSize() == 0){
             Call<GetChannelListResponse> call = BaseApiClient.getAstroService().getChannelList();
             call.enqueue(new Callback<GetChannelListResponse>() {
@@ -68,7 +70,7 @@ public class MainPresenter implements MainContract.Presenter {
                                 }
                             }
                             DataManager.getInstance().setChannelList(channelList);
-                            switch (sortType){
+                            switch (channelSortType){
                                 default:
                                 case SortType.ByNumber:
                                     view.displayChannel(DataManager.getInstance().getChannelListByNumber());
@@ -92,7 +94,7 @@ public class MainPresenter implements MainContract.Presenter {
                 }
             });
         }else{
-            switch (sortType){
+            switch (channelSortType){
                 default:
                 case SortType.ByNumber:
                     view.displayChannel(DataManager.getInstance().getChannelListByNumber());
@@ -105,8 +107,28 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void favouriteChannel(ChannelList channel) {
+    public void updateChannelSort(int sortType) {
+        channelSortType = sortType;
+        getChannelList();
+    }
 
+    @Override
+    public void favouriteChannel(ChannelList channel) {
+        if (UserManager.getInstance().hasUserId()){
+            //logined
+            if (channel.isFavourite()){
+                UserManager.getInstance().removeFavouriteChannel(channel);
+                DataManager.getInstance().updateChannelList(channel.getChannelId(),false);
+            }else{
+                UserManager.getInstance().addFavouriteChannel(channel);
+                DataManager.getInstance().updateChannelList(channel.getChannelId(),true);
+            }
+            getChannelList();
+            //todo fire api
+        }else{
+            //no user account
+            //todo request login
+        }
     }
 
     @Override

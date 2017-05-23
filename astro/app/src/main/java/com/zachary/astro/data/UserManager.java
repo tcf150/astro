@@ -25,6 +25,14 @@ public class UserManager {
     }
 
     public String getUserId(){
+        return user.getUserId();
+    }
+
+    public boolean hasUserId(){
+        return (user.getUserId() != null && user.getUserId().length() > 0);
+    }
+
+    public String getSocialId(){
         return user.getSocialId();
     }
 
