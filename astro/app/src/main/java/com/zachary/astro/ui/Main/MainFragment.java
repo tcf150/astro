@@ -1,6 +1,7 @@
 package com.zachary.astro.ui.Main;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
 
     private RecyclerView rvChannel;
     private ChannelAdapter adapter;
+    private ProgressDialog dialog;
 
     private CallbackManager callbackManager;
 
@@ -50,6 +52,12 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main,container,false);
+
+        dialog = new ProgressDialog(getContext());
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage(getString(R.string.loading_message));
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
 
         rvChannel = getViewByView(rootView,R.id.rvChannel);
 
@@ -114,6 +122,15 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
     }
 
     @Override
+    public void showLoading(boolean show) {
+        if (show){
+            if (!dialog.isShowing()) dialog.show();
+        }else{
+            dialog.dismiss();
+        }
+    }
+
+    @Override
     public void displayErrorToast(String message) {
         Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
     }
@@ -122,4 +139,6 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
     public void onFavouriteClick(ChannelList channel) {
         presenter.favouriteChannel(channel);
     }
+
+
 }

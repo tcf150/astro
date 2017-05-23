@@ -56,6 +56,7 @@ public class MainPresenter implements MainContract.Presenter {
         }else {
             String cacheUserId = UserManager.getInstance().getUserIdCache();
             if (cacheUserId != null && cacheUserId.length() > 0) {
+                view.showLoading(true);
                 Call<GetUserDetailResponse> call = BaseApiClient.getAstroUserService().getUserDetail(Integer.valueOf(cacheUserId));
                 call.enqueue(new Callback<GetUserDetailResponse>() {
                     @Override
@@ -102,6 +103,7 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void getChannelList(){
         if (DataManager.getInstance().getChannelListSize() == 0){
+            view.showLoading(true);
             Call<GetChannelListResponse> call = BaseApiClient.getAstroService().getChannelList();
             call.enqueue(new Callback<GetChannelListResponse>() {
                 @Override
@@ -136,12 +138,14 @@ public class MainPresenter implements MainContract.Presenter {
                             view.displayErrorToast(getChannelListResponse.getResponseMessage());
                         }
                     }
+                    view.showLoading(false);
                 }
 
                 @Override
                 public void onFailure(Call<GetChannelListResponse> call, Throwable t) {
                     t.printStackTrace();
                     view.displayErrorToast(t.getMessage());
+                    view.showLoading(false);
 
                 }
             });
@@ -244,6 +248,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void facebookLogin(Fragment fragment,CallbackManager callbackManager) {
+        view.showLoading(true);
         if (AccessToken.getCurrentAccessToken() != null){
             getFacebookGraph(AccessToken.getCurrentAccessToken());
             return;
@@ -258,12 +263,12 @@ public class MainPresenter implements MainContract.Presenter {
 
             @Override
             public void onCancel() {
-
+                view.showLoading(false);
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                view.showLoading(false);
             }
         });
     }
@@ -299,11 +304,12 @@ public class MainPresenter implements MainContract.Presenter {
                                     }else{
                                         view.displayErrorToast(createUserResponse.getResponseMessage());
                                     }
+                                    view.showLoading(false);
                                 }
 
                                 @Override
                                 public void onFailure(Call<CreateUserResponse> call, Throwable t) {
-
+                                    view.showLoading(false);
                                 }
                             });
                         }catch (Exception e){

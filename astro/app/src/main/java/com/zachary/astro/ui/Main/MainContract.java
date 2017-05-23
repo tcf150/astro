@@ -19,6 +19,7 @@ public interface MainContract {
         void displayChannel(List<ChannelList> channelList);
         void displayLoginDialog();
         void gotoFavourite();
+        void showLoading(boolean show);
     }
 
     interface Presenter extends BasePresenter {
