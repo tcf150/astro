@@ -9,4 +9,15 @@
 
     <string name="sort_channel_number">Sort By Channel Number</string>
     <string name="sort_channel_name">Sort By Channel Name</string>
+
+    <string name="permission_title">Request Permission</string>
+    <string name="permission_update">Update Permission</string>
+    <string name="permission_not_now">Not Now</string>
+    <string name="permission_request_user_detail">Require your permission to performance Google Login</string>
+
+    <string name="dialog_login_title">Login Required</string>
+    <string name="dialog_login_desc">Please Login to performance action</string>
+    <string name="dialog_login_google">Google</string>
+    <string name="dialog_login_facebook">Facebook</string>
+    <string name="dialog_login_later">Later</string>
 </resources>

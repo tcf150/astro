@@ -1,5 +1,7 @@
 package com.zachary.astro.ui.Main;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -79,6 +81,27 @@ public class MainFragment extends BaseFragment implements MainContract.View,Chan
     @Override
     public void displayChannel(List<ChannelList> channelList) {
         adapter.replaceData(channelList);
+    }
+
+    @Override
+    public void displayLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.dialog_login_title);
+        builder.setMessage(R.string.dialog_login_desc);
+        builder.setNeutralButton(R.string.dialog_login_later, null);
+        builder.setNegativeButton(R.string.dialog_login_facebook, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.facebookLogin(MainFragment.this,callbackManager);
+            }
+        });
+        builder.setPositiveButton(R.string.dialog_login_google, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.googleLogin();
+            }
+        });
+        builder.create().show();
     }
 
     @Override

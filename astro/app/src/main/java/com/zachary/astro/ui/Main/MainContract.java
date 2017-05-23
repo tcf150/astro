@@ -17,6 +17,7 @@ import java.util.List;
 public interface MainContract {
     interface View extends BaseView<Presenter> {
         void displayChannel(List<ChannelList> channelList);
+        void displayLoginDialog();
     }
 
     interface Presenter extends BasePresenter {
@@ -24,5 +25,6 @@ public interface MainContract {
         void getChannelList();
         void updateChannelSort(@SortType int sortType);
         void facebookLogin(Fragment fragment, CallbackManager callbackManager);
+        void googleLogin();
     }
 }

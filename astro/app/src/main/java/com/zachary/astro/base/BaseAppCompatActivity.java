@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.zachary.astro.R;
+
 /**
  * Created by user on 10/5/2017.
  */
@@ -82,7 +84,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             case PackageManager.PERMISSION_GRANTED:
                 return true;
             default:
-                    return false;
+                return false;
         }
     }
 
@@ -100,8 +102,8 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
 
     protected void showAppPermissionDialog(@StringRes int resId, @Nullable DialogInterface.OnClickListener onClickListener){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Are you sure?");
-        builder.setPositiveButton("Update Permission", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.permission_title);
+        builder.setPositiveButton(R.string.permission_update, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent();
@@ -111,7 +113,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
                 startActivityForResult(intent,PERMISSION_REQUEST_CODE);
             }
         });
-        builder.setNegativeButton("Not Now",onClickListener);
+        builder.setNegativeButton(R.string.permission_not_now,onClickListener);
         builder.setMessage(resId);
 
         AlertDialog dialog = builder.create();

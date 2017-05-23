@@ -127,7 +127,7 @@ public class MainPresenter implements MainContract.Presenter {
             //todo fire api
         }else{
             //no user account
-            //todo request login
+            view.displayLoginDialog();
         }
     }
 
@@ -155,6 +155,11 @@ public class MainPresenter implements MainContract.Presenter {
 
             }
         });
+    }
+
+    @Override
+    public void googleLogin() {
+
     }
 
     private void getFacebookGraph(AccessToken accessToken){
